@@ -1,0 +1,308 @@
+
+# ============================================
+# 5. about.html - With LOCAL image paths
+# ============================================
+about_html = r'''{% extends "base.html" %}
+
+{% block title %}About - FetalAI{% endblock %}
+
+{% block extra_css %}
+<style>
+    .about-section {
+        padding: 30px 0 80px;
+    }
+    
+    .about-header {
+        text-align: center;
+        margin-bottom: 50px;
+    }
+    
+    .about-header h1 {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--text-dark);
+        margin-bottom: 15px;
+    }
+    
+    .about-header p {
+        color: var(--text-muted);
+        font-size: 1.1rem;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    
+    .about-card {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 25px;
+        padding: 50px;
+        box-shadow: 0 15px 50px rgba(0,0,0,0.08);
+        border: 1px solid rgba(255,255,255,0.8);
+    }
+    
+    .about-image {
+        width: 100%;
+        max-width: 380px;
+        border-radius: 20px;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+        margin-bottom: 30px;
+        border: 3px solid rgba(255,255,255,0.8);
+        transition: all 0.4s ease;
+    }
+    
+    .about-image:hover {
+        transform: scale(1.03);
+        box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+    }
+    
+    .about-text h2 {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.8rem;
+        color: var(--text-dark);
+        margin-bottom: 20px;
+    }
+    
+    .about-text p {
+        color: var(--text-muted);
+        line-height: 1.8;
+        font-size: 1.05rem;
+        margin-bottom: 20px;
+    }
+    
+    .tech-stack {
+        margin-top: 40px;
+    }
+    
+    .tech-stack h3 {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.5rem;
+        color: var(--text-dark);
+        margin-bottom: 25px;
+        text-align: center;
+    }
+    
+    .tech-item {
+        background: rgba(255,255,255,0.8);
+        border-radius: 15px;
+        padding: 25px 20px;
+        text-align: center;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(0,0,0,0.05);
+        height: 100%;
+    }
+    
+    .tech-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    }
+    
+    .tech-icon {
+        font-size: 2.5rem;
+        margin-bottom: 15px;
+    }
+    
+    .tech-name {
+        font-weight: 600;
+        color: var(--text-dark);
+        font-size: 1rem;
+    }
+    
+    .tech-desc {
+        color: var(--text-muted);
+        font-size: 0.85rem;
+        margin-top: 5px;
+    }
+    
+    .mission-card {
+        background: linear-gradient(135deg, rgba(255, 209, 220, 0.3), rgba(184, 212, 227, 0.3));
+        border-radius: 20px;
+        padding: 40px;
+        margin-top: 40px;
+        text-align: center;
+        border: 1px solid rgba(255,255,255,0.5);
+    }
+    
+    .mission-card img {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid rgba(255,255,255,0.8);
+        margin-bottom: 20px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    }
+    
+    .mission-card h3 {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.5rem;
+        color: var(--text-dark);
+        margin-bottom: 15px;
+    }
+    
+    .mission-card p {
+        color: var(--text-muted);
+        line-height: 1.7;
+        max-width: 700px;
+        margin: 0 auto;
+    }
+    
+    .gallery-row {
+        margin-top: 50px;
+    }
+    
+    .gallery-row h3 {
+        font-family: 'Playfair Display', serif;
+        text-align: center;
+        margin-bottom: 30px;
+        color: var(--text-dark);
+    }
+    
+    .gallery-img-about {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        border: 2px solid rgba(255,255,255,0.8);
+        transition: all 0.3s ease;
+    }
+    
+    .gallery-img-about:hover {
+        transform: scale(1.05);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+    }
+    
+    @media (max-width: 768px) {
+        .about-card { padding: 30px 20px; }
+        .about-header h1 { font-size: 2rem; }
+        .about-image { max-width: 280px; }
+        .gallery-img-about { height: 150px; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="about-section">
+    <div class="container">
+        <div class="about-header" data-aos="fade-down">
+            <h1><i class="fa-solid fa-circle-info me-3" style="color: var(--medical-blue);"></i>About FetalAI</h1>
+            <p>Empowering maternal health through artificial intelligence and machine learning</p>
+        </div>
+        
+        <div class="row align-items-center g-5">
+            <div class="col-lg-5" data-aos="fade-right">
+                <!-- LOCAL Mother Image -->
+                <img src="{{ url_for('static', filename='images/mother-bump.jpg') }}" 
+                     alt="Mother with Baby Bump" class="about-image">
+            </div>
+            <div class="col-lg-7" data-aos="fade-left">
+                <div class="about-text">
+                    <h2>Protecting Every Little Heartbeat</h2>
+                    <p>
+                        This project uses machine learning to monitor fetal health and help in early detection 
+                        of risks during pregnancy. FetalAI is designed to be a supportive tool for both 
+                        healthcare professionals and expectant mothers, providing quick and reliable health 
+                        assessments based on key fetal monitoring parameters.
+                    </p>
+                    <p>
+                        By analyzing fetal heart rate, uterine contractions, fetal movements, accelerations, 
+                        and decelerations, our trained machine learning model can classify the fetal health 
+                        status into three categories: <strong>Normal</strong>, <strong>Suspect</strong>, and 
+                        <strong>Pathological</strong>.
+                    </p>
+                    <p>
+                        Early detection of fetal distress can save lives. FetalAI aims to make this 
+                        technology accessible, user-friendly, and emotionally supportive for everyone 
+                        involved in the beautiful journey of pregnancy.
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- LOCAL Baby Image Gallery -->
+        <div class="gallery-row" data-aos="fade-up" data-aos-delay="200">
+            <h3>The Miracle of Life</h3>
+            <div class="row g-4">
+                <div class="col-6 col-md-3">
+                    <img src="{{ url_for('static', filename='images/baby-womb.jpg') }}" 
+                         alt="Fetal Development" class="gallery-img-about">
+                </div>
+                <div class="col-6 col-md-3">
+                    <img src="{{ url_for('static', filename='images/baby-feet.jpg') }}" 
+                         alt="Baby Feet" class="gallery-img-about">
+                </div>
+                <div class="col-6 col-md-3">
+                    <img src="{{ url_for('static', filename='images/ultrasound.jpg') }}" 
+                         alt="Ultrasound" class="gallery-img-about">
+                </div>
+                <div class="col-6 col-md-3">
+                    <img src="{{ url_for('static', filename='images/newborn.jpg') }}" 
+                         alt="Newborn Baby" class="gallery-img-about">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mission -->
+        <div class="mission-card" data-aos="fade-up" data-aos-delay="200">
+            <!-- LOCAL Baby Image -->
+            <img src="{{ url_for('static', filename='images/baby-womb.jpg') }}" 
+                 alt="Baby in Womb">
+            <h3>Our Mission</h3>
+            <p>
+                To leverage the power of artificial intelligence to improve maternal and fetal health outcomes. 
+                We believe every baby deserves the best start in life, and every mother deserves peace of mind 
+                during her pregnancy journey.
+            </p>
+        </div>
+        
+        <!-- Tech Stack -->
+        <div class="tech-stack" data-aos="fade-up" data-aos-delay="300">
+            <h3>Technology Stack</h3>
+            <div class="row g-4 mt-3">
+                <div class="col-6 col-md-3">
+                    <div class="tech-item">
+                        <div class="tech-icon" style="color: #3776ab;">
+                            <i class="fa-brands fa-python"></i>
+                        </div>
+                        <div class="tech-name">Python</div>
+                        <div class="tech-desc">Core Language</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="tech-item">
+                        <div class="tech-icon" style="color: #000;">
+                            <i class="fa-brands fa-flask"></i>
+                        </div>
+                        <div class="tech-name">Flask</div>
+                        <div class="tech-desc">Web Framework</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="tech-item">
+                        <div class="tech-icon" style="color: #7952b3;">
+                            <i class="fa-brands fa-bootstrap"></i>
+                        </div>
+                        <div class="tech-name">Bootstrap 5</div>
+                        <div class="tech-desc">UI Framework</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="tech-item">
+                        <div class="tech-icon" style="color: #f7931e;">
+                            <i class="fa-solid fa-brain"></i>
+                        </div>
+                        <div class="tech-name">Scikit-Learn</div>
+                        <div class="tech-desc">ML Library</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+'''
+
+with open('/mnt/agents/output/fetalai/templates/about.html', 'w', encoding='utf-8') as f:
+    f.write(about_html)
+
+print("about.html saved!")

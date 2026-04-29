@@ -1,0 +1,453 @@
+
+# ============================================
+# UPDATED result.html - With 21 INPUT FIELDS display
+# ============================================
+result_html = r'''{% extends "base.html" %}
+
+{% block title %}Result - FetalAI{% endblock %}
+
+{% block extra_css %}
+<style>
+    .result-section {
+        padding: 30px 0 80px;
+        min-height: calc(100vh - 280px);
+    }
+    
+    .result-card {
+        max-width: 750px;
+        margin: 0 auto;
+        border-radius: 30px;
+        padding: 50px 40px;
+        text-align: center;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .result-card::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 5px;
+    }
+    
+    .result-card.success::before { background: linear-gradient(90deg, #28a745, #20c997); }
+    .result-card.warning::before { background: linear-gradient(90deg, #fd7e14, #ffc107); }
+    .result-card.danger::before { background: linear-gradient(90deg, #dc3545, #e74c3c); }
+    .result-card.secondary::before { background: linear-gradient(90deg, #6c757d, #95a5a6); }
+    
+    .result-card.success { 
+        background: linear-gradient(135deg, rgba(40, 167, 69, 0.05), rgba(255,255,255,0.95));
+        border: 2px solid rgba(40, 167, 69, 0.2);
+    }
+    .result-card.warning { 
+        background: linear-gradient(135deg, rgba(253, 126, 20, 0.05), rgba(255,255,255,0.95));
+        border: 2px solid rgba(253, 126, 20, 0.2);
+    }
+    .result-card.danger { 
+        background: linear-gradient(135deg, rgba(220, 53, 69, 0.05), rgba(255,255,255,0.95));
+        border: 2px solid rgba(220, 53, 69, 0.2);
+    }
+    .result-card.secondary { 
+        background: linear-gradient(135deg, rgba(108, 117, 125, 0.05), rgba(255,255,255,0.95));
+        border: 2px solid rgba(108, 117, 125, 0.2);
+    }
+    
+    .result-baby-img {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin: 0 auto 20px;
+        border: 3px solid rgba(255,255,255,0.8);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        animation: scaleIn 0.6s ease;
+    }
+    
+    .result-icon-wrapper {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 25px;
+        font-size: 3rem;
+        animation: scaleIn 0.6s ease;
+    }
+    
+    .result-card.success .result-icon-wrapper {
+        background: linear-gradient(135deg, #d4edda, #c3e6cb);
+        color: #28a745;
+        box-shadow: 0 10px 30px rgba(40, 167, 69, 0.3);
+    }
+    .result-card.warning .result-icon-wrapper {
+        background: linear-gradient(135deg, #fff3cd, #ffeeba);
+        color: #fd7e14;
+        box-shadow: 0 10px 30px rgba(253, 126, 20, 0.3);
+    }
+    .result-card.danger .result-icon-wrapper {
+        background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+        color: #dc3545;
+        box-shadow: 0 10px 30px rgba(220, 53, 69, 0.3);
+    }
+    .result-card.secondary .result-icon-wrapper {
+        background: linear-gradient(135deg, #e2e3e5, #d6d8db);
+        color: #6c757d;
+    }
+    
+    @keyframes scaleIn {
+        0% { transform: scale(0); opacity: 0; }
+        50% { transform: scale(1.2); }
+        100% { transform: scale(1); opacity: 1; }
+    }
+    
+    .result-status {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 15px;
+    }
+    
+    .result-card.success .result-status { color: #28a745; }
+    .result-card.warning .result-status { color: #fd7e14; }
+    .result-card.danger .result-status { color: #dc3545; }
+    .result-card.secondary .result-status { color: #6c757d; }
+    
+    .result-message {
+        font-size: 1.15rem;
+        color: var(--text-muted);
+        margin-bottom: 30px;
+        line-height: 1.6;
+        padding: 0 20px;
+    }
+    
+    .data-summary {
+        background: rgba(255,255,255,0.7);
+        border-radius: 20px;
+        padding: 25px;
+        margin: 30px 0;
+        text-align: left;
+    }
+    
+    .data-summary h4 {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    
+    .data-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px solid rgba(0,0,0,0.05);
+    }
+    
+    .data-row:last-child { border-bottom: none; }
+    
+    .data-label {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--text-muted);
+        font-size: 0.9rem;
+    }
+    
+    .data-label i {
+        width: 28px;
+        height: 28px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.8rem;
+        color: white;
+    }
+    
+    .data-value {
+        font-weight: 600;
+        color: var(--text-dark);
+        font-size: 0.9rem;
+    }
+    
+    .result-actions {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 30px;
+    }
+    
+    .advice-box {
+        background: rgba(255,255,255,0.6);
+        border-radius: 15px;
+        padding: 20px 25px;
+        margin-top: 25px;
+        text-align: left;
+    }
+    
+    .advice-box h5 {
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .advice-box ul {
+        margin: 0;
+        padding-left: 20px;
+        color: var(--text-muted);
+        font-size: 0.95rem;
+    }
+    
+    .advice-box li { margin-bottom: 5px; }
+    
+    @media (max-width: 768px) {
+        .result-card {
+            padding: 35px 20px;
+            margin: 0 15px;
+        }
+        .result-status { font-size: 1.8rem; }
+        .result-baby-img { width: 80px; height: 80px; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="result-section">
+    <div class="container">
+        <div class="result-card {{ result.color }}" data-aos="zoom-in">
+            <!-- LOCAL Baby Image based on result -->
+            {% if result.status == 'Normal' %}
+            <img src="{{ url_for('static', filename='images/newborn.jpg') }}" 
+                 alt="Healthy Baby" class="result-baby-img">
+            {% elif result.status == 'Suspect' %}
+            <img src="{{ url_for('static', filename='images/mother-bump.jpg') }}" 
+                 alt="Baby Bump" class="result-baby-img">
+            {% elif result.status == 'Pathological' %}
+            <img src="{{ url_for('static', filename='images/ultrasound.jpg') }}" 
+                 alt="Ultrasound" class="result-baby-img">
+            {% else %}
+            <img src="{{ url_for('static', filename='images/baby-womb.jpg') }}" 
+                 alt="Baby" class="result-baby-img">
+            {% endif %}
+            
+            <div class="result-icon-wrapper">
+                <i class="fa-solid {{ result.icon }}"></i>
+            </div>
+            
+            <h1 class="result-status">{{ result.status }}</h1>
+            <p class="result-message">{{ result.message }}</p>
+            
+            {% if data %}
+            <div class="data-summary" data-aos="fade-up" data-aos-delay="200">
+                <h4><i class="fa-solid fa-clipboard-list me-2"></i>Input Summary (21 Parameters)</h4>
+                
+                <div class="data-row">
+                    <span class="data-label">
+                        <i class="fa-solid fa-heart-pulse" style="background: linear-gradient(135deg, #ff6b8a, #ff8fa3);"></i>
+                        Baseline Value
+                    </span>
+                    <span class="data-value">{{ data.baseline_value }}</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">
+                        <i class="fa-solid fa-arrow-trend-up" style="background: linear-gradient(135deg, #ffd93d, #ffb347);"></i>
+                        Accelerations
+                    </span>
+                    <span class="data-value">{{ data.accelerations }}</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">
+                        <i class="fa-solid fa-baby" style="background: linear-gradient(135deg, #a8e6cf, #88d8b0);"></i>
+                        Fetal Movement
+                    </span>
+                    <span class="data-value">{{ data.fetal_movement }}</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">
+                        <i class="fa-solid fa-wave-square" style="background: linear-gradient(135deg, #6ecbf5, #4a90a4);"></i>
+                        Uterine Contractions
+                    </span>
+                    <span class="data-value">{{ data.uterine_contractions }}</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">
+                        <i class="fa-solid fa-arrow-trend-down" style="background: linear-gradient(135deg, #ff6b6b, #ee5a5a);"></i>
+                        Light Decelerations
+                    </span>
+                    <span class="data-value">{{ data.light_decelerations }}</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">
+                        <i class="fa-solid fa-arrow-trend-down" style="background: linear-gradient(135deg, #ff6b6b, #ee5a5a);"></i>
+                        Severe Decelerations
+                    </span>
+                    <span class="data-value">{{ data.severe_decelerations }}</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">
+                        <i class="fa-solid fa-arrow-trend-down" style="background: linear-gradient(135deg, #ff6b6b, #ee5a5a);"></i>
+                        Prolonged Decelerations
+                    </span>
+                    <span class="data-value">{{ data.prolonged_decelerations }}</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">
+                        <i class="fa-solid fa-wave-square" style="background: linear-gradient(135deg, #9b59b6, #8e44ad);"></i>
+                        Abnormal Short Term Variability
+                    </span>
+                    <span class="data-value">{{ data.abnormal_short_term_variability }}</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">
+                        <i class="fa-solid fa-wave-square" style="background: linear-gradient(135deg, #9b59b6, #8e44ad);"></i>
+                        Mean Short Term Variability
+                    </span>
+                    <span class="data-value">{{ data.mean_short_term_variability }}</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">
+                        <i class="fa-solid fa-percent" style="background: linear-gradient(135deg, #e67e22, #d35400);"></i>
+                        % Long Term Variability
+                    </span>
+                    <span class="data-value">{{ data.percentage_long_term_variability }}</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">
+                        <i class="fa-solid fa-wave-square" style="background: linear-gradient(135deg, #9b59b6, #8e44ad);"></i>
+                        Mean Long Term Variability
+                    </span>
+                    <span class="data-value">{{ data.mean_long_term_variability }}</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">
+                        <i class="fa-solid fa-chart-bar" style="background: linear-gradient(135deg, #3498db, #2980b9);"></i>
+                        Histogram Width
+                    </span>
+                    <span class="data-value">{{ data.histogram_width }}</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">
+                        <i class="fa-solid fa-chart-bar" style="background: linear-gradient(135deg, #3498db, #2980b9);"></i>
+                        Histogram Min
+                    </span>
+                    <span class="data-value">{{ data.histogram_min }}</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">
+                        <i class="fa-solid fa-chart-bar" style="background: linear-gradient(135deg, #3498db, #2980b9);"></i>
+                        Histogram Max
+                    </span>
+                    <span class="data-value">{{ data.histogram_max }}</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">
+                        <i class="fa-solid fa-chart-bar" style="background: linear-gradient(135deg, #3498db, #2980b9);"></i>
+                        Histogram Peaks
+                    </span>
+                    <span class="data-value">{{ data.histogram_number_of_peaks }}</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">
+                        <i class="fa-solid fa-chart-bar" style="background: linear-gradient(135deg, #3498db, #2980b9);"></i>
+                        Histogram Zeroes
+                    </span>
+                    <span class="data-value">{{ data.histogram_number_of_zeroes }}</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">
+                        <i class="fa-solid fa-chart-line" style="background: linear-gradient(135deg, #e67e22, #d35400);"></i>
+                        Histogram Mode
+                    </span>
+                    <span class="data-value">{{ data.histogram_mode }}</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">
+                        <i class="fa-solid fa-chart-line" style="background: linear-gradient(135deg, #e67e22, #d35400);"></i>
+                        Histogram Mean
+                    </span>
+                    <span class="data-value">{{ data.histogram_mean }}</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">
+                        <i class="fa-solid fa-chart-line" style="background: linear-gradient(135deg, #e67e22, #d35400);"></i>
+                        Histogram Median
+                    </span>
+                    <span class="data-value">{{ data.histogram_median }}</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">
+                        <i class="fa-solid fa-chart-pie" style="background: linear-gradient(135deg, #e67e22, #d35400);"></i>
+                        Histogram Variance
+                    </span>
+                    <span class="data-value">{{ data.histogram_variance }}</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">
+                        <i class="fa-solid fa-chart-pie" style="background: linear-gradient(135deg, #e67e22, #d35400);"></i>
+                        Histogram Tendency
+                    </span>
+                    <span class="data-value">{{ data.histogram_tendency }}</span>
+                </div>
+            </div>
+            {% endif %}
+            
+            {% if result.status == 'Normal' %}
+            <div class="advice-box" data-aos="fade-up" data-aos-delay="300">
+                <h5><i class="fa-solid fa-check-circle" style="color: #28a745;"></i> Recommendations</h5>
+                <ul>
+                    <li>Continue regular prenatal checkups</li>
+                    <li>Maintain a healthy diet and stay hydrated</li>
+                    <li>Monitor baby's movements daily</li>
+                    <li>Get adequate rest and sleep</li>
+                </ul>
+            </div>
+            {% elif result.status == 'Suspect' %}
+            <div class="advice-box" data-aos="fade-up" data-aos-delay="300">
+                <h5><i class="fa-solid fa-triangle-exclamation" style="color: #fd7e14;"></i> Recommendations</h5>
+                <ul>
+                    <li>Schedule a follow-up with your doctor soon</li>
+                    <li>Increase fetal movement monitoring</li>
+                    <li>Consider additional diagnostic tests</li>
+                    <li>Rest and avoid strenuous activities</li>
+                </ul>
+            </div>
+            {% elif result.status == 'Pathological' %}
+            <div class="advice-box" data-aos="fade-up" data-aos-delay="300">
+                <h5><i class="fa-solid fa-heart-crack" style="color: #dc3545;"></i> Urgent Recommendations</h5>
+                <ul>
+                    <li>Seek immediate medical attention</li>
+                    <li>Contact your healthcare provider right away</li>
+                    <li>Go to the nearest hospital or clinic</li>
+                    <li>Do not delay - your baby's health is priority</li>
+                </ul>
+            </div>
+            {% endif %}
+            
+            <div class="result-actions" data-aos="fade-up" data-aos-delay="400">
+                <a href="/predict" class="btn btn-primary-custom">
+                    <i class="fa-solid fa-rotate-right me-2"></i>New Prediction
+                </a>
+                <a href="{{ download_link or '/download_report' }}" class="btn btn-success-custom">
+                    <i class="fa-solid fa-download me-2"></i>Download Report
+                </a>
+                <a href="/" class="btn btn-outline-custom">
+                    <i class="fa-solid fa-house me-2"></i>Back to Home
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+'''
+
+with open('/mnt/agents/output/fetalai/templates/result.html', 'w', encoding='utf-8') as f:
+    f.write(result_html)
+
+print("✅ result.html with 21 FIELDS saved!")

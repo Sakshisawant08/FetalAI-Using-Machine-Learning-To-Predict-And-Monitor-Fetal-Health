@@ -1,0 +1,328 @@
+
+# ============================================
+# 2. index.html - With LOCAL image paths
+# ============================================
+index_html = '''{% extends "base.html" %}
+
+{% block title %}FetalAI - Baby Health Prediction System{% endblock %}
+
+{% block extra_css %}
+<style>
+    .hero-section {
+        min-height: calc(100vh - 200px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 0;
+        position: relative;
+    }
+    
+    .hero-content {
+        text-align: center;
+        max-width: 850px;
+        position: relative;
+        z-index: 2;
+    }
+    
+    .hero-image-top {
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin: 0 auto 25px;
+        border: 4px solid rgba(255, 255, 255, 0.8);
+        box-shadow: 0 10px 40px rgba(255, 182, 193, 0.4);
+        animation: floatImage 6s ease-in-out infinite;
+    }
+    
+    @keyframes floatImage {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-15px); }
+    }
+    
+    .hero-icon {
+        font-size: 4.5rem;
+        color: var(--soft-pink-dark);
+        margin-bottom: 20px;
+        display: inline-block;
+        text-shadow: 0 5px 20px rgba(255, 182, 193, 0.4);
+    }
+    
+    .hero-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 3.2rem;
+        font-weight: 700;
+        color: var(--text-dark);
+        margin-bottom: 18px;
+        line-height: 1.2;
+    }
+    
+    .hero-title span {
+        background: linear-gradient(135deg, var(--soft-pink-dark), var(--medical-blue));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    .hero-subtitle {
+        font-size: 1.25rem;
+        color: var(--text-muted);
+        margin-bottom: 35px;
+        font-weight: 300;
+        line-height: 1.6;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    .hero-buttons {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    
+    .feature-cards {
+        margin-top: 70px;
+    }
+    
+    .feature-card {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 20px;
+        padding: 35px 25px;
+        text-align: center;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.06);
+        transition: all 0.4s ease;
+        border: 1px solid rgba(255,255,255,0.8);
+        height: 100%;
+    }
+    
+    .feature-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+    }
+    
+    .feature-icon {
+        width: 75px;
+        height: 75px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        font-size: 1.8rem;
+        transition: all 0.3s ease;
+    }
+    
+    .feature-icon.pink {
+        background: linear-gradient(135deg, var(--soft-pink), var(--soft-pink-dark));
+        color: white;
+    }
+    
+    .feature-icon.blue {
+        background: linear-gradient(135deg, var(--light-blue), var(--light-blue-dark));
+        color: white;
+    }
+    
+    .feature-icon.green {
+        background: linear-gradient(135deg, #a8e6cf, #88d8b0);
+        color: white;
+    }
+    
+    .feature-card:hover .feature-icon {
+        transform: scale(1.1) rotate(5deg);
+    }
+    
+    .feature-title {
+        font-weight: 600;
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+        color: var(--text-dark);
+    }
+    
+    .feature-desc {
+        color: var(--text-muted);
+        font-size: 0.95rem;
+        line-height: 1.5;
+    }
+    
+    .stats-section {
+        margin-top: 60px;
+        padding: 40px 0;
+    }
+    
+    .stat-card {
+        text-align: center;
+        padding: 30px;
+    }
+    
+    .stat-number {
+        font-family: 'Playfair Display', serif;
+        font-size: 3rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, var(--soft-pink-dark), var(--medical-blue));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    .stat-label {
+        color: var(--text-muted);
+        font-weight: 500;
+        margin-top: 5px;
+    }
+    
+    .baby-gallery {
+        margin-top: 60px;
+    }
+    
+    .gallery-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 2rem;
+        text-align: center;
+        margin-bottom: 35px;
+        color: var(--text-dark);
+    }
+    
+    .gallery-title span {
+        background: linear-gradient(135deg, var(--soft-pink-dark), var(--medical-blue));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    .gallery-img {
+        width: 100%;
+        height: 220px;
+        object-fit: cover;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        transition: all 0.4s ease;
+        border: 3px solid rgba(255,255,255,0.8);
+    }
+    
+    .gallery-img:hover {
+        transform: scale(1.05) rotate(2deg);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+    }
+    
+    @media (max-width: 768px) {
+        .hero-title { font-size: 2rem; }
+        .hero-subtitle { font-size: 1rem; }
+        .hero-icon { font-size: 3rem; }
+        .hero-image-top { width: 130px; height: 130px; }
+        .gallery-img { height: 160px; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+    <div class="container">
+        <div class="hero-content" data-aos="fade-up">
+            <!-- LOCAL Baby Image on Top -->
+            <img src="{{ url_for('static', filename='images/baby-womb.jpg') }}" 
+                 alt="Baby in Womb" class="hero-image-top" data-aos="zoom-in">
+            
+            <h1 class="hero-title" data-aos="fade-up" data-aos-delay="100">
+                FetalAI<br>
+                <span>Baby Health Prediction System</span>
+            </h1>
+            <p class="hero-subtitle" data-aos="fade-up" data-aos-delay="200">
+                AI-powered system to monitor unborn baby health during pregnancy.<br>
+                Trusted by doctors and loved by mothers worldwide.
+            </p>
+            <div class="hero-buttons" data-aos="fade-up" data-aos-delay="300">
+                <a href="/predict" class="btn btn-primary-custom">
+                    <i class="fa-solid fa-stethoscope me-2"></i>Start Prediction
+                </a>
+                <a href="/about" class="btn btn-outline-custom">
+                    <i class="fa-solid fa-circle-info me-2"></i>Learn More
+                </a>
+            </div>
+        </div>
+        
+        <!-- Feature Cards -->
+        <div class="row feature-cards g-4" data-aos="fade-up" data-aos-delay="200">
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon pink">
+                        <i class="fa-solid fa-heart-pulse"></i>
+                    </div>
+                    <h3 class="feature-title">Real-time Monitoring</h3>
+                    <p class="feature-desc">Track fetal heart rate and movements with precision using advanced AI algorithms.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon blue">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                    <h3 class="feature-title">Early Detection</h3>
+                    <p class="feature-desc">Identify potential risks early to ensure timely medical intervention and care.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon green">
+                        <i class="fa-solid fa-user-doctor"></i>
+                    </div>
+                    <h3 class="feature-title">Doctor Trusted</h3>
+                    <p class="feature-desc">Designed with medical professionals for accurate and reliable health assessments.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Stats -->
+        <div class="row stats-section g-4" data-aos="fade-up" data-aos-delay="400">
+            <div class="col-md-4">
+                <div class="stat-card glass-card">
+                    <div class="stat-number">98%</div>
+                    <div class="stat-label">Prediction Accuracy</div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card glass-card">
+                    <div class="stat-number">5000+</div>
+                    <div class="stat-label">Happy Mothers</div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card glass-card">
+                    <div class="stat-number">24/7</div>
+                    <div class="stat-label">Health Monitoring</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- LOCAL Baby Image Gallery -->
+        <div class="baby-gallery" data-aos="fade-up" data-aos-delay="200">
+            <h2 class="gallery-title"><span>Every Life</span> Deserves the Best Care</h2>
+            <div class="row g-4">
+                <div class="col-6 col-md-3">
+                    <img src="{{ url_for('static', filename='images/mother-bump.jpg') }}" 
+                         alt="Mother with Baby Bump" class="gallery-img">
+                </div>
+                <div class="col-6 col-md-3">
+                    <img src="{{ url_for('static', filename='images/baby-feet.jpg') }}" 
+                         alt="Baby Feet" class="gallery-img">
+                </div>
+                <div class="col-6 col-md-3">
+                    <img src="{{ url_for('static', filename='images/ultrasound.jpg') }}" 
+                         alt="Ultrasound Scan" class="gallery-img">
+                </div>
+                <div class="col-6 col-md-3">
+                    <img src="{{ url_for('static', filename='images/newborn.jpg') }}" 
+                         alt="Newborn Baby" class="gallery-img">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+'''
+
+with open('/mnt/agents/output/fetalai/templates/index.html', 'w', encoding='utf-8') as f:
+    f.write(index_html)
+
+print("✅ index.html with LOCAL images saved!")

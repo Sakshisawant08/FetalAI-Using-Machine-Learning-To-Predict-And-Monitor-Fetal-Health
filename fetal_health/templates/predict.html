@@ -1,0 +1,515 @@
+
+# ============================================
+# UPDATED predict.html - With 21 INPUT FIELDS
+# ============================================
+{% extends "base.html" %}
+
+{% block title %}Predict - FetalAI{% endblock %}
+
+{% block extra_css %}
+<style>
+    .predict-section {
+        padding: 30px 0 80px;
+    }
+    
+    .predict-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+    
+    .predict-header img {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid rgba(255, 255, 255, 0.8);
+        box-shadow: 0 8px 30px rgba(255, 182, 193, 0.3);
+        margin-bottom: 20px;
+        animation: floatImage 5s ease-in-out infinite;
+    }
+    
+    .predict-header h1 {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--text-dark);
+        margin-bottom: 10px;
+    }
+    
+    .predict-header p {
+        color: var(--text-muted);
+        font-size: 1.05rem;
+    }
+    
+    .predict-card {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 25px;
+        padding: 45px;
+        box-shadow: 0 15px 50px rgba(0,0,0,0.08);
+        max-width: 900px;
+        margin: 0 auto;
+        border: 1px solid rgba(255,255,255,0.8);
+    }
+    
+    .form-group {
+        margin-bottom: 22px;
+        position: relative;
+    }
+    
+    .form-label {
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 0.95rem;
+    }
+    
+    .form-label i {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.9rem;
+    }
+    
+    .icon-heart { background: linear-gradient(135deg, #ff6b8a, #ff8fa3); color: white; }
+    .icon-wave { background: linear-gradient(135deg, #6ecbf5, #4a90a4); color: white; }
+    .icon-baby { background: linear-gradient(135deg, #a8e6cf, #88d8b0); color: white; }
+    .icon-graph { background: linear-gradient(135deg, #ffd93d, #ffb347); color: white; }
+    .icon-warning { background: linear-gradient(135deg, #ff6b6b, #ee5a5a); color: white; }
+    .icon-medical { background: linear-gradient(135deg, #9b59b6, #8e44ad); color: white; }
+    .icon-time { background: linear-gradient(135deg, #3498db, #2980b9); color: white; }
+    .icon-percent { background: linear-gradient(135deg, #e67e22, #d35400); color: white; }
+    
+    .form-control {
+        border: 2px solid #e8e8e8;
+        border-radius: 12px;
+        padding: 12px 16px;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        background: rgba(255,255,255,0.8);
+    }
+    
+    .form-control:focus {
+        border-color: var(--soft-pink-dark);
+        box-shadow: 0 0 0 4px rgba(255, 182, 193, 0.2);
+        background: white;
+    }
+    
+    .form-control::placeholder {
+        color: #bbb;
+        font-size: 0.85rem;
+    }
+    
+    .input-hint {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        margin-top: 4px;
+        margin-left: 42px;
+    }
+    
+    .predict-btn {
+        width: 100%;
+        padding: 18px;
+        font-size: 1.2rem;
+        margin-top: 20px;
+    }
+    
+    .form-divider {
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--soft-pink), transparent);
+        margin: 25px 0;
+    }
+    
+    .section-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.3rem;
+        color: var(--medical-blue);
+        margin-bottom: 20px;
+        text-align: center;
+        padding: 10px;
+        background: linear-gradient(135deg, rgba(255,209,220,0.2), rgba(184,212,227,0.2));
+        border-radius: 12px;
+    }
+    
+    .info-banner {
+        background: linear-gradient(135deg, rgba(184, 212, 227, 0.2), rgba(255, 209, 220, 0.2));
+        border-radius: 15px;
+        padding: 20px 25px;
+        margin-bottom: 30px;
+        border-left: 4px solid var(--medical-blue);
+        display: flex;
+        align-items: flex-start;
+        gap: 15px;
+    }
+    
+    .info-banner i {
+        color: var(--medical-blue);
+        font-size: 1.3rem;
+        margin-top: 3px;
+    }
+    
+    .info-banner p {
+        margin: 0;
+        color: var(--text-muted);
+        font-size: 0.95rem;
+        line-height: 1.5;
+    }
+    
+    @keyframes floatImage {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+    }
+    
+    @media (max-width: 768px) {
+        .predict-card {
+            padding: 25px 15px;
+        }
+        .predict-header h1 {
+            font-size: 1.8rem;
+        }
+        .predict-header img {
+            width: 90px; height: 90px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="predict-section">
+    <div class="container">
+        <div class="predict-header" data-aos="fade-down">
+            <img src="{{ url_for('static', filename='images/ultrasound.jpg') }}" 
+                 alt="Baby Ultrasound">
+            <h1><i class="fa-solid fa-stethoscope me-3" style="color: var(--medical-blue);"></i>Health Prediction</h1>
+            <p>Enter all 21 fetal monitoring parameters below for accurate AI-powered health assessment</p>
+        </div>
+        
+        <div class="predict-card" data-aos="fade-up" data-aos-delay="100">
+            <div class="info-banner">
+                <i class="fa-solid fa-circle-info"></i>
+                <p>Please enter accurate values from your fetal monitoring report (CTG). All 21 fields are required for accurate prediction.</p>
+            </div>
+            
+            <form action="/predict" method="POST">
+                
+                <!-- SECTION 1: Baseline Fetal Heart Rate -->
+                <div class="section-title">
+                    <i class="fa-solid fa-heart-pulse me-2"></i>Baseline Fetal Heart Rate
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group" data-aos="fade-right" data-aos-delay="150">
+                            <label class="form-label">
+                                <i class="fa-solid fa-heart-pulse icon-heart"></i>
+                                Baseline Value (bpm)
+                            </label>
+                            <input type="number" name="baseline_value" class="form-control" 
+                                   placeholder="e.g., 120 - 160" step="0.1" required>
+                            <div class="input-hint">Normal: 110-160 bpm</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group" data-aos="fade-left" data-aos-delay="150">
+                            <label class="form-label">
+                                <i class="fa-solid fa-wave-square icon-wave"></i>
+                                Uterine Contractions (per sec)
+                            </label>
+                            <input type="number" name="uterine_contractions" class="form-control" 
+                                   placeholder="e.g., 0.000 - 0.015" step="0.0001" required>
+                            <div class="input-hint">Uterine activity measure</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-divider"></div>
+                
+                <!-- SECTION 2: Fetal Movements -->
+                <div class="section-title">
+                    <i class="fa-solid fa-baby me-2"></i>Fetal Movements
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group" data-aos="fade-right" data-aos-delay="200">
+                            <label class="form-label">
+                                <i class="fa-solid fa-baby icon-baby"></i>
+                                Fetal Movements
+                            </label>
+                            <input type="number" name="fetal_movement" class="form-control" 
+                                   placeholder="e.g., 0.0 - 0.5" step="0.01" required>
+                            <div class="input-hint">Number of movements detected</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group" data-aos="fade-left" data-aos-delay="200">
+                            <label class="form-label">
+                                <i class="fa-solid fa-person-pregnant icon-medical"></i>
+                                Light Decelerations (LD)
+                            </label>
+                            <input type="number" name="light_decelerations" class="form-control" 
+                                   placeholder="e.g., 0.0 - 0.02" step="0.0001" required>
+                            <div class="input-hint">Light deceleration count</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group" data-aos="fade-right" data-aos-delay="250">
+                            <label class="form-label">
+                                <i class="fa-solid fa-person-pregnant icon-medical"></i>
+                                Severe Decelerations (SD)
+                            </label>
+                            <input type="number" name="severe_decelerations" class="form-control" 
+                                   placeholder="e.g., 0.0 - 0.01" step="0.0001" required>
+                            <div class="input-hint">Severe deceleration count</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group" data-aos="fade-left" data-aos-delay="250">
+                            <label class="form-label">
+                                <i class="fa-solid fa-person-pregnant icon-medical"></i>
+                                Prolonged Decelerations (PD)
+                            </label>
+                            <input type="number" name="prolonged_decelerations" class="form-control" 
+                                   placeholder="e.g., 0.0 - 0.01" step="0.0001" required>
+                            <div class="input-hint">Prolonged deceleration count</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-divider"></div>
+                
+                <!-- SECTION 3: Heart Rate Patterns -->
+                <div class="section-title">
+                    <i class="fa-solid fa-heart-pulse me-2"></i>Heart Rate Patterns
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group" data-aos="fade-right" data-aos-delay="300">
+                            <label class="form-label">
+                                <i class="fa-solid fa-arrow-trend-up icon-graph"></i>
+                                Accelerations
+                            </label>
+                            <input type="number" name="accelerations" class="form-control" 
+                                   placeholder="e.g., 0.0 - 0.02" step="0.0001" required>
+                            <div class="input-hint">HR accelerations above baseline</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group" data-aos="fade-left" data-aos-delay="300">
+                            <label class="form-label">
+                                <i class="fa-solid fa-wave-square icon-wave"></i>
+                                Abnormal Short Term Variability
+                            </label>
+                            <input type="number" name="abnormal_short_term_variability" class="form-control" 
+                                   placeholder="e.g., 12 - 87" step="0.1" required>
+                            <div class="input-hint">Short term HR variation</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group" data-aos="fade-right" data-aos-delay="350">
+                            <label class="form-label">
+                                <i class="fa-solid fa-wave-square icon-wave"></i>
+                                Mean Short Term Variability
+                            </label>
+                            <input type="number" name="mean_short_term_variability" class="form-control" 
+                                   placeholder="e.g., 0.2 - 7.0" step="0.01" required>
+                            <div class="input-hint">Mean of short term variation</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group" data-aos="fade-left" data-aos-delay="350">
+                            <label class="form-label">
+                                <i class="fa-solid fa-wave-square icon-wave"></i>
+                                Percentage Long Term Variability
+                            </label>
+                            <input type="number" name="percentage_long_term_variability" class="form-control" 
+                                   placeholder="e.g., 0 - 91" step="0.1" required>
+                            <div class="input-hint">Long term variation %</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-divider"></div>
+                
+                <!-- SECTION 4: Variability -->
+                <div class="section-title">
+                    <i class="fa-solid fa-wave-square me-2"></i>Variability Measures
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group" data-aos="fade-right" data-aos-delay="400">
+                            <label class="form-label">
+                                <i class="fa-solid fa-wave-square icon-wave"></i>
+                                Mean Long Term Variability
+                            </label>
+                            <input type="number" name="mean_long_term_variability" class="form-control" 
+                                   placeholder="e.g., 0 - 50.7" step="0.1" required>
+                            <div class="input-hint">Mean of long term variation</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group" data-aos="fade-left" data-aos-delay="400">
+                            <label class="form-label">
+                                <i class="fa-solid fa-chart-bar icon-graph"></i>
+                                Histogram Width
+                            </label>
+                            <input type="number" name="histogram_width" class="form-control" 
+                                   placeholder="e.g., 3 - 180" step="0.1" required>
+                            <div class="input-hint">Width of FHR histogram</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-divider"></div>
+                
+                <!-- SECTION 5: Histogram Measures -->
+                <div class="section-title">
+                    <i class="fa-solid fa-chart-bar me-2"></i>Histogram Measures
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group" data-aos="fade-right" data-aos-delay="450">
+                            <label class="form-label">
+                                <i class="fa-solid fa-chart-bar icon-graph"></i>
+                                Histogram Min
+                            </label>
+                            <input type="number" name="histogram_min" class="form-control" 
+                                   placeholder="e.g., 50 - 159" step="0.1" required>
+                            <div class="input-hint">Minimum FHR value</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group" data-aos="fade-up" data-aos-delay="450">
+                            <label class="form-label">
+                                <i class="fa-solid fa-chart-bar icon-graph"></i>
+                                Histogram Max
+                            </label>
+                            <input type="number" name="histogram_max" class="form-control" 
+                                   placeholder="e.g., 122 - 238" step="0.1" required>
+                            <div class="input-hint">Maximum FHR value</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group" data-aos="fade-left" data-aos-delay="450">
+                            <label class="form-label">
+                                <i class="fa-solid fa-chart-bar icon-graph"></i>
+                                Histogram Number of Peaks
+                            </label>
+                            <input type="number" name="histogram_number_of_peaks" class="form-control" 
+                                   placeholder="e.g., 0 - 18" step="1" required>
+                            <div class="input-hint">Number of peaks in histogram</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group" data-aos="fade-right" data-aos-delay="500">
+                            <label class="form-label">
+                                <i class="fa-solid fa-chart-bar icon-graph"></i>
+                                Histogram Number of Zeroes
+                            </label>
+                            <input type="number" name="histogram_number_of_zeroes" class="form-control" 
+                                   placeholder="e.g., 0 - 10" step="1" required>
+                            <div class="input-hint">Zero frequency count</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group" data-aos="fade-left" data-aos-delay="500">
+                            <label class="form-label">
+                                <i class="fa-solid fa-chart-line icon-medical"></i>
+                                Histogram Mode
+                            </label>
+                            <input type="number" name="histogram_mode" class="form-control" 
+                                   placeholder="e.g., 60 - 187" step="0.1" required>
+                            <div class="input-hint">Most frequent FHR value</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-divider"></div>
+                
+                <!-- SECTION 6: Histogram Statistics -->
+                <div class="section-title">
+                    <i class="fa-solid fa-chart-line me-2"></i>Histogram Statistics
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group" data-aos="fade-right" data-aos-delay="550">
+                            <label class="form-label">
+                                <i class="fa-solid fa-chart-line icon-medical"></i>
+                                Histogram Mean
+                            </label>
+                            <input type="number" name="histogram_mean" class="form-control" 
+                                   placeholder="e.g., 73 - 182" step="0.1" required>
+                            <div class="input-hint">Mean FHR value</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group" data-aos="fade-up" data-aos-delay="550">
+                            <label class="form-label">
+                                <i class="fa-solid fa-chart-line icon-medical"></i>
+                                Histogram Median
+                            </label>
+                            <input type="number" name="histogram_median" class="form-control" 
+                                   placeholder="e.g., 77 - 186" step="0.1" required>
+                            <div class="input-hint">Median FHR value</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group" data-aos="fade-left" data-aos-delay="550">
+                            <label class="form-label">
+                                <i class="fa-solid fa-chart-pie icon-percent"></i>
+                                Histogram Variance
+                            </label>
+                            <input type="number" name="histogram_variance" class="form-control" 
+                                   placeholder="e.g., 0 - 269" step="0.1" required>
+                            <div class="input-hint">Variance of FHR values</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-divider"></div>
+                
+                <!-- SECTION 7: Final Measures -->
+                <div class="section-title">
+                    <i class="fa-solid fa-chart-pie me-2"></i>Final Measures
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group" data-aos="fade-right" data-aos-delay="600">
+                            <label class="form-label">
+                                <i class="fa-solid fa-chart-pie icon-percent"></i>
+                                Histogram Tendency
+                            </label>
+                            <input type="number" name="histogram_tendency" class="form-control" 
+                                   placeholder="e.g., -1, 0, 1" step="1" required>
+                            <div class="input-hint">Distribution tendency (-1, 0, 1)</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-primary-custom predict-btn" data-aos="zoom-in" data-aos-delay="700">
+                    <i class="fa-solid fa-magnifying-glass-chart me-2"></i>Analyze Baby's Health
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

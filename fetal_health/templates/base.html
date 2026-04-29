@@ -1,0 +1,343 @@
+
+# ============================================
+# FIXED base.html - extra_css block properly placed
+# ============================================
+base_html = r'''<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}FetalAI{% endblock %}</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- AOS Animation -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --soft-pink: #ffd1dc;
+            --soft-pink-dark: #ffb6c1;
+            --light-blue: #b8d4e3;
+            --light-blue-dark: #87ceeb;
+            --medical-blue: #4a90a4;
+            --white: #ffffff;
+            --cream: #faf8f5;
+            --text-dark: #2c3e50;
+            --text-muted: #6c757d;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--cream);
+            color: var(--text-dark);
+            overflow-x: hidden;
+        }
+        
+        /* ===== BACKGROUND DESIGN - LOCAL IMAGE ===== */
+        .page-bg {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: -1;
+            background: linear-gradient(135deg, 
+                rgba(255, 209, 220, 0.25) 0%, 
+                rgba(184, 212, 227, 0.25) 40%, 
+                rgba(255, 255, 255, 0.85) 100%);
+        }
+        
+        .page-bg::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-image: url("{{ url_for('static', filename='images/maternal-grace.jpg') }}");
+            background-size: cover;
+            background-position: center top;
+            background-attachment: fixed;
+            filter: blur(6px) brightness(1.15);
+            opacity: 0.12;
+        }
+        
+        /* ===== NAVBAR ===== */
+        .navbar {
+            background: rgba(255, 255, 255, 0.9) !important;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0 2px 25px rgba(0,0,0,0.06);
+            padding: 12px 0;
+            transition: all 0.3s ease;
+        }
+        
+        .navbar-brand {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--medical-blue) !important;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .navbar-brand i {
+            color: var(--soft-pink-dark);
+            font-size: 1.5rem;
+        }
+        
+        .nav-link {
+            font-weight: 500;
+            color: var(--text-dark) !important;
+            margin: 0 12px;
+            padding: 8px 22px !important;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .nav-link:hover {
+            color: var(--medical-blue) !important;
+            background: rgba(184, 212, 227, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .nav-link.active {
+            color: var(--medical-blue) !important;
+            background: linear-gradient(135deg, var(--soft-pink) 0%, var(--light-blue) 100%);
+            box-shadow: 0 4px 15px rgba(255, 182, 193, 0.3);
+        }
+        
+        /* ===== CARDS ===== */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.07);
+            transition: all 0.4s ease;
+            overflow: hidden;
+        }
+        
+        .glass-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+        }
+        
+        /* ===== BUTTONS ===== */
+        .btn-primary-custom {
+            background: linear-gradient(135deg, var(--soft-pink-dark) 0%, var(--light-blue-dark) 100%);
+            border: none;
+            color: white;
+            padding: 14px 40px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            letter-spacing: 0.5px;
+            box-shadow: 0 8px 25px rgba(255, 182, 193, 0.4);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-primary-custom::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .btn-primary-custom:hover::before { left: 100%; }
+        
+        .btn-primary-custom:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(255, 182, 193, 0.5);
+            color: white;
+        }
+        
+        .btn-outline-custom {
+            border: 2px solid var(--medical-blue);
+            color: var(--medical-blue);
+            padding: 12px 35px;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            background: transparent;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-outline-custom:hover {
+            background: var(--medical-blue);
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        /* ===== FLOATING SHAPES ===== */
+        .floating-shape {
+            position: fixed;
+            border-radius: 50%;
+            opacity: 0.08;
+            z-index: -1;
+            animation: float 25s infinite ease-in-out;
+        }
+        
+        .shape-1 {
+            width: 350px; height: 350px;
+            background: var(--soft-pink);
+            top: 5%; left: -8%;
+            animation-delay: 0s;
+        }
+        
+        .shape-2 {
+            width: 250px; height: 250px;
+            background: var(--light-blue);
+            top: 55%; right: -5%;
+            animation-delay: 7s;
+        }
+        
+        .shape-3 {
+            width: 180px; height: 180px;
+            background: var(--soft-pink-dark);
+            bottom: 8%; left: 8%;
+            animation-delay: 14s;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(30px, -30px) rotate(120deg); }
+            66% { transform: translate(-20px, 20px) rotate(240deg); }
+        }
+        
+        /* ===== HEARTBEAT ANIMATION ===== */
+        .heartbeat {
+            animation: heartbeat 2s infinite;
+        }
+        
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            10% { transform: scale(1.12); }
+            20% { transform: scale(1); }
+            30% { transform: scale(1.12); }
+            40% { transform: scale(1); }
+        }
+        
+        /* ===== FOOTER ===== */
+        .footer {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(10px);
+            padding: 30px 0;
+            margin-top: 80px;
+            border-top: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .footer-text {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            text-align: center;
+        }
+        
+        .footer-heart {
+            color: var(--soft-pink-dark);
+            animation: heartbeat 2s infinite;
+            display: inline-block;
+        }
+        
+        /* ===== SCROLLBAR ===== */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--cream); }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(var(--soft-pink), var(--light-blue));
+            border-radius: 10px;
+        }
+        
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .navbar-brand { font-size: 1.4rem; }
+            .nav-link { margin: 5px 0; text-align: center; }
+        }
+    </style>
+    
+    <!-- BLOCK FOR CHILD PAGES TO ADD EXTRA CSS -->
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Background -->
+    <div class="page-bg"></div>
+    
+    <!-- Floating Shapes -->
+    <div class="floating-shape shape-1"></div>
+    <div class="floating-shape shape-2"></div>
+    <div class="floating-shape shape-3"></div>
+    
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fa-solid fa-baby"></i>
+                FetalAI
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.path == '/' %}active{% endif %}" href="/">
+                            <i class="fa-solid fa-house me-2"></i>Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.path == '/predict' %}active{% endif %}" href="/predict">
+                            <i class="fa-solid fa-stethoscope me-2"></i>Predict
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.path == '/about' %}active{% endif %}" href="/about">
+                            <i class="fa-solid fa-circle-info me-2"></i>About
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Main Content -->
+    <main style="padding-top: 90px; min-height: calc(100vh - 200px);">
+        {% block content %}{% endblock %}
+    </main>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p class="footer-text mb-0">
+                Made with <i class="fa-solid fa-heart footer-heart"></i> for maternal health | FetalAI &copy; 2026
+            </p>
+        </div>
+    </footer>
+    
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({ duration: 1000, once: true, offset: 100 });
+    </script>
+    
+    <!-- BLOCK FOR CHILD PAGES TO ADD EXTRA JS -->
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
+'''
+
+with open('/mnt/agents/output/fetalai/templates/base.html', 'w', encoding='utf-8') as f:
+    f.write(base_html)
+
+print("✅ base.html FIXED - extra_css block properly placed in <head>")
