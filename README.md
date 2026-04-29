@@ -28,6 +28,7 @@ FetalAI predicts the risk of preterm birth or other pregnancy complications base
 
 Technical Architecture::
 
+<img width="813" height="490" alt="image" src="https://github.com/user-attachments/assets/e9f88776-1dea-4987-84d9-c0c55cc649c8" />
 
 
 Project Flow: 
